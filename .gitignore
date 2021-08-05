@@ -1,0 +1,5 @@
+/data/modelnet40_normal_resampled/
+/runs
+/checkpoint
+
+#*.pkl
