@@ -32,10 +32,10 @@ modelnet_train_set = dataset.ModelNetDataset(
 # 训练超参数
 params = OrderedDict(
     lr=[.001],
-    batch_size=[32],
+    batch_size=[32, 64],
     shuffle=[True],
-    device=['cpu'],
-    epoch_num=[1]
+    device=['cuda'],
+    epoch_num=[50]
 )
 
 # 多次训练
@@ -48,7 +48,8 @@ for run in tqdm.tqdm(iterable=RunBuilder.get_runs(params), desc='runs loop'):  #
     run_manager.begin_run(network, train_loader, run)
     for epoch in tqdm.tqdm(iterable=range(run.epoch_num), desc='epochs loop', leave=False):  # Step 6
         run_manager.begin_epoch()
-        for batch in tqdm.tqdm(iterable=train_loader, desc='batches loop', leave=False):   # Step 1
+        # for batch in tqdm.tqdm(iterable=train_loader, desc='batches loop', leave=False):   # Step 1
+        for batch in train_loader:  # Step 1
             images = batch[0].to(device)
             labels = batch[1].to(device)
             preds = network(images)  # Step 2

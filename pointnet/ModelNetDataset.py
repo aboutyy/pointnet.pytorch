@@ -26,6 +26,7 @@ class ModelNetDataset(data.Dataset):
         self.npoints = npoints
         self.split = split
         self.data_augmentation = data_augmentation
+
         self.num_category = num_category
 
         # 读取文件中的points和labels
@@ -67,6 +68,10 @@ class ModelNetDataset(data.Dataset):
 
     def __len__(self):  # 数据集必须实现的函数
         return len(self.shape_path_with_class)
+
+    @staticmethod
+    def get_num_class():
+        return 10
 
 
 if __name__ == '__main__':
