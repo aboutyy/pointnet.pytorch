@@ -68,3 +68,7 @@ for run in tqdm.tqdm(iterable=RunBuilder.get_runs(params), desc='runs loop'):  #
     torch.save(network.state_dict(), save_model_path)
 date = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 run_manager.save(f'runs/Results_{date}')
+
+
+def train_model_with_early_stopping(model, batch_size, patience, n_epochs):
+    pass
