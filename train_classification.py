@@ -70,5 +70,5 @@ date = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 run_manager.save(f'runs/Results_{date}')
 
 
-def train_model(model, batch_size, patience, n_epochs):
+def train_model_with_early_stopping(model, batch_size, patience, n_epochs):
     pass

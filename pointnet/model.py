@@ -65,6 +65,14 @@ class ClassificationPointNet(nn.Module):
         return t
 
 
+class SegmentationPointNet(nn.Module):
+    def __init__(self, num_class, point_dimension=3):
+        super(SegmentationPointNet, self).__init__()
+
+    def forward(self, t):
+        return t
+
+
 if __name__ == '__main__':
     network = ClassificationPointNet(10, 3)
     data_set = torch.rand(3, 1024, 3)
