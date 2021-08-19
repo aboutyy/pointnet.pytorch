@@ -40,6 +40,7 @@ params = OrderedDict(
 
 # 多次训练
 run_manager = RunManager()
+critical_indices = []   # Critical Points
 for run in tqdm.tqdm(iterable=RunBuilder.get_runs(params), desc='runs loop'):  # Step 7
     device = torch.device(run.device)
     network = ClassificationPointNet(num_class=10, point_dimension=3).to(device)  # 构建网络
@@ -52,7 +53,7 @@ for run in tqdm.tqdm(iterable=RunBuilder.get_runs(params), desc='runs loop'):  #
         for batch in train_loader:  # Step 1
             images = batch[0].to(device)
             labels = batch[1].to(device)
-            preds = network(images)  # Step 2
+            preds, critical_indices = network(images)  # Step 2
 
             loss = F.cross_entropy(preds, labels)  # Step 3
             optimizer.zero_grad()

@@ -8,7 +8,7 @@ import pickle
 class ModelNetDataset(data.Dataset):
     def __init__(self,
                  root,
-                 npoints=1024,
+                 npoints=1000,
                  split='train',
                  num_category=10,
                  data_augmentation=True,

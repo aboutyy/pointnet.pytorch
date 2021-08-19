@@ -9,19 +9,19 @@ class BasePointNet(nn.Module):
     def __init__(self, point_dimension=3):
         super(BasePointNet, self).__init__()
         self.point_dimension = point_dimension
-        #  layer1:
+        #  layer1: 3*n to 64*n
         self.conv1 = nn.Conv1d(point_dimension,64,1)
         self.batch_norm1 = nn.BatchNorm1d(64)
-        #  layer2
+        #  layer2: 64*n to 64*n
         self.conv2 = nn.Conv1d(64, 64, 1)
         self.batch_norm2 = nn.BatchNorm1d(64)
-        #  layer3
+        #  layer3: 64*n to 64*n
         self.conv3 = nn.Conv1d(64, 64, 1)
         self.batch_norm3 = nn.BatchNorm1d(64)
-        #  layer4
+        #  layer4:64*n to 128*n
         self.conv4 = nn.Conv1d(64, 128, 1)
         self.batch_norm4 = nn.BatchNorm1d(128)
-        #  layer5
+        #  layer5:128*n to 1024*n
         self.conv5 = nn.Conv1d(128, 1024, 1)
         self.batch_norm5 = nn.BatchNorm1d(1024)
 
@@ -35,11 +35,12 @@ class BasePointNet(nn.Module):
         t = F.relu(self.batch_norm4(self.conv4(t)))
         t = F.relu(self.batch_norm5(self.conv5(t)))
 
-        max_pool = nn.MaxPool1d(t.shape[1])  # maxpooling
-        t = max_pool(t)
+        max_pool = nn.MaxPool1d(t.shape[2], return_indices=True)  # maxpooling
+        t, critial_indices = max_pool(t)  ## 获得critical points的index
 
         t = t.view(-1, 1024)  # 展平1024*1 的矩阵为一个向量，作为后面全连接层的输入
-        return t
+        critial_indices = critial_indices.view(-1, 1024)
+        return t, critial_indices
 
 
 class ClassificationPointNet(nn.Module):
@@ -55,14 +56,14 @@ class ClassificationPointNet(nn.Module):
         self.out = nn.Linear(in_features=256, out_features=num_class)
 
     def forward(self, t):
-        t = self.base_pointnet(t)
+        t, critial_indices = self.base_pointnet(t)
         t = F.relu(self.batch_nomr1(self.fc1(t)))
         t = F.relu(self.batch_nomr2(self.fc2(t)))
         # TODO  add dropout here
         t = self.out(t)
 
         # return F.log_softmax(t, dim=1)  # 如果loss函数用的cross_entropy则不用计算softmax值
-        return t
+        return t, critial_indices
 
 
 class SegmentationPointNet(nn.Module):
